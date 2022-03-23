@@ -72,7 +72,7 @@ const collegeDetails = async function (req, res) {
         }
         else {
             internDetails.interns = " No Intern Applied To This College"
-            res.status(404).send({ status: true, data: internDetails })
+            res.status(200).send({ status: true, data: internDetails })
         }
     } catch (error) {
         console.log(error)
