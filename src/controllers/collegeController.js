@@ -36,7 +36,7 @@ const createCollege = async function (req, res) {
 
         let college = await CollegeModel.create(data)
 
-        res.status(200).send({ status: true, data: college })
+        res.status(201).send({ status: true, data: college })
 
 
     } catch (error) {
@@ -50,7 +50,7 @@ const collegeDetails = async function (req, res) {
     try {
         let collegeName = req.query.collegeName
 
-        if (!collegeName) {
+        if (!isValid(collegeName)) {
             return res.status(400).send({ status: false, msg: "collegeName is required " })
         }
         let collegeData = await CollegeModel.findOne({ name: collegeName })
@@ -72,7 +72,7 @@ const collegeDetails = async function (req, res) {
         }
         else {
             internDetails.interns = " No Intern Applied To This College"
-            res.status(404).send({ status: true, data: internDetails })
+            res.status(200).send({ status: true, data: internDetails })
         }
     } catch (error) {
         console.log(error)

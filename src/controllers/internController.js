@@ -18,7 +18,7 @@ const createIntern = async function (req, res) {
     try {
         let data = req.body
 
-        let { name, email, mobile, collegeId } = data
+        let { name, email, mobile, collegeName} = data
 
         if (Object.keys(data).length == 0) {
             res.status(400).send({ status: false, msg: "BAD REQUEST" })
@@ -44,15 +44,10 @@ const createIntern = async function (req, res) {
             res.status(400).send({ status: false, msg: "mobile is not a valid mobile number" })
             return
         }
-        if (!isValid(collegeId)) {
-            res.status(400).send({ status: false, msg: "collegeId is required" })
+        if (!isValid(collegeName)) {
+            res.status(400).send({ status: false, msg: "collegeName is required" })
             return
         }
-        if (!isValidObjectId(collegeId)) {
-            res.status(400).send({ status: false, msg: "collegeId is not a valid objectId" })
-            return
-        }
-
         let isemailAlreadyUsed = await InternModel.findOne({ email })
         if (isemailAlreadyUsed) {
             res.status(400).send({ status: false, msg: "this email is already used, please provide another email" })
@@ -64,12 +59,13 @@ const createIntern = async function (req, res) {
             return res.status(400).send({ status: false, msg: "mobile is already used, please provide another mobile number" })
         }
 
-        let collegeDetails = await CollegeModel.findById(collegeId)
+        let collegeDetails = await CollegeModel.findOne({name: collegeName})
         if (!collegeDetails) {
-            return res.status(404).send({ status: false, msg: "collgeId doesn't exist" })
+            return res.status(404).send({ status: false, msg: "collgeName doesn't exist" })
         }
         else {
-            let internCreated = await InternModel.create(data)
+            let internToBeCreated = { name, email, mobile, collegeId: collegeDetails._id}
+            let internCreated = await InternModel.create(internToBeCreated)
             res.status(201).send({ status: true, data: internCreated })
         }
 
